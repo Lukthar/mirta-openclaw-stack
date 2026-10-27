@@ -1,0 +1,39 @@
+# Credenciales y secretos — NUNCA deben entrar a la imagen
+.env
+.env.*
+credentials/
+*.pem
+*.key
+
+# Git y control de versiones
+.git
+.gitignore
+.dockerignore
+
+# Python cache
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+
+# Docker y datos locales
+docker-compose.yml
+docker-compose.override.yml
+redis_data/
+*.rdb
+*.aof
+
+# IDE y sistema operativo
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Documentación y archivos de referencia
+README.md
+Estructura.txt
+docs/
+LICENSE
+.github/

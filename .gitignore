@@ -1,0 +1,30 @@
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Credenciales de Google Cloud / Service Accounts
+credentials/
+*.json
+!openclaw-workspace/openclaw.json
+
+# Python & Entornos virtuales
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+
+# Datos locales de Redis y Docker
+redis_data/
+*.rdb
+*.aof
+
+# Sistema Operativo e IDEs
+.DS_Store
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  mirta-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mirta-gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./credentials/service_account.json:/app/credentials/service_account.json:ro
+    depends_on:
+      - mirta-redis
+
+  mirta-redis:
+    image: redis:7-alpine
+    container_name: mirta-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - mirta_redis_data:/data
+
+volumes:
+  mirta_redis_data:

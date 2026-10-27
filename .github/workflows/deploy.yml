@@ -1,0 +1,15 @@
+name: Deploy a EasyPanel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger EasyPanel Rebuild
+        run: |
+          curl -sSf -X POST "${{ secrets.EASYPANEL_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            || echo "⚠️ Webhook falló — verificar URL en GitHub Secrets"

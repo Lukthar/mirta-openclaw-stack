@@ -1,0 +1,32 @@
+{
+  "agent": {
+    "name": "Mirta",
+    "description": "Secretaria y recepcionista virtual de la Clínica Odontológica",
+    "model": {
+      "provider": "openrouter",
+      "name": "openai/gpt-4o",
+      "temperature": 0.15,
+      "fallback": {
+        "provider": "groq",
+        "name": "openai/gpt-oss-20b"
+      }
+    }
+  },
+  "mcpServers": {
+    "mirta-clinic-mcp": {
+      "command": "python3",
+      "args": ["/app/mcp-servers/mirta-clinic-mcp/server.py"],
+      "env": {
+        "REDIS_URL": "${REDIS_URL}",
+        "GOOGLE_APPLICATION_CREDENTIALS": "${GOOGLE_APPLICATION_CREDENTIALS}",
+        "CLINIC_DOC_ID": "${CLINIC_DOC_ID}",
+        "CATALOG_SHEET_ID": "${CATALOG_SHEET_ID}",
+        "TURNOS_SHEET_ID": "${TURNOS_SHEET_ID}",
+        "TURNOS_SHEET_NAME": "${TURNOS_SHEET_NAME}",
+        "EVOLUTION_API_URL": "${EVOLUTION_API_URL}",
+        "EVOLUTION_INSTANCE": "${EVOLUTION_INSTANCE}",
+        "EVOLUTION_API_KEY": "${EVOLUTION_API_KEY}"
+      }
+    }
+  }
+}

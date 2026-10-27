@@ -1,0 +1,22 @@
+mirta-openclaw-stack/
+├── .gitignore
+├── .env.example
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── gateway.py
+├── mcp-servers/
+│   └── mirta-clinic-mcp/
+│       ├── __init__.py
+│       ├── cache_sync.py
+│       ├── security_harness.py
+│       ├── server.py
+│       └── cron_workers.py
+├── openclaw-workspace/
+│   ├── openclaw.json
+│   ├── SOUL.md
+│   └── skills/
+│       └── atencion-y-turnos/
+│           └── SKILL.md
+└── tests/
+    └── test_security_harnesses.py
