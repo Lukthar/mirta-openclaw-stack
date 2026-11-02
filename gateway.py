@@ -21,6 +21,7 @@ from security_harness import (
     ARG_TZ
 )
 from server import (
+    mcp,
     _get_google_services,
     _read_all_turnos_rows,
     _send_evolution_whatsapp,
@@ -35,6 +36,9 @@ logger = logging.getLogger("mirta.gateway")
 logging.basicConfig(level=logging.INFO)
 
 app = FastAPI(title="Mirta OpenClaw Gateway & Security Harness")
+
+# Exponer el servidor MCP por red interna HTTP/SSE en /mcp/sse
+app.mount("/mcp", mcp.sse_app())
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 GOOGLE_CREDS_PATH = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "./credentials/service_account.json")
