@@ -4,6 +4,7 @@ import base64
 import asyncio
 import logging
 import urllib.request
+import urllib.error
 from datetime import datetime
 from typing import Dict, Any, List
 from dotenv import load_dotenv
@@ -120,15 +121,24 @@ def _get_patient_active_appointments(clean_phone: str) -> List[Dict[str, str]]:
         return []
 
 
-context_header = (
-    f"<Contexto_Sistema>\n"
-    f"- Fecha_Hora_Actual: {now_str} (America/Argentina/Buenos_Aires)\n"
-    f"- Session_Phone (usar en tools MCP): {clean_phone}\n"
-    f"- Nombre_WhatsApp: {push_name}\n"
-    f"- Rol_Usuario: {'SECRETARIA_ADMIN' if is_secretary else 'PACIENTE'}\n"
-    f"</Contexto_Sistema>\n\n"
-    f"<Contexto_Clinico>\n{json.dumps(safe_ctx, ensure_ascii=False)}\n</Contexto_Clinico>\n\n"
-    f"<Turnos_Activos_Paciente>\n{json.dumps(mis_turnos, ensure_ascii=False)}\n</Turnos_Activos_Paciente>"
+def _invoke_openclaw_agent(clean_phone: str, push_name: str, user_text: str, is_secretary: bool) -> str:
+    now_str = datetime.now(ARG_TZ).strftime("%Y-%m-%d %H:%M (%A)")
+    safe_ctx = cache_mgr.get_patient_safe_context()
+    mis_turnos = _get_patient_active_appointments(clean_phone)
+
+    history_key = f"chat_history:{clean_phone}"
+    raw_hist = cache_mgr.redis.get(history_key)
+    sliding_window = json.loads(raw_hist) if raw_hist else []
+
+    context_header = (
+        f"<Contexto_Sistema>\n"
+        f"- Fecha_Hora_Actual: {now_str} (America/Argentina/Buenos_Aires)\n"
+        f"- Session_Phone (usar en tools MCP): {clean_phone}\n"
+        f"- Nombre_WhatsApp: {push_name}\n"
+        f"- Rol_Usuario: {'SECRETARIA_ADMIN' if is_secretary else 'PACIENTE'}\n"
+        f"</Contexto_Sistema>\n\n"
+        f"<Contexto_Clinico>\n{json.dumps(safe_ctx, ensure_ascii=False)}\n</Contexto_Clinico>\n\n"
+        f"<Turnos_Activos_Paciente>\n{json.dumps(mis_turnos, ensure_ascii=False)}\n</Turnos_Activos_Paciente>"
     )
 
     messages = [{"role": "system", "content": context_header}]
@@ -420,5 +430,7 @@ async def procesar_formulario_asistencia(token: str, estado: str = Form(...)):
                 f"Cuando quieras, lo coordinamos 🙌"
             )
         await asyncio.to_thread(_send_evolution_whatsapp, contacto, msg, 2000)
+
+    return HTMLResponse("<h3>¡Gracias! Se actualizó la planilla y se envió el seguimiento al paciente.</h3>")
 
     return HTMLResponse("<h3>¡Gracias! Se actualizó la planilla y se envió el seguimiento al paciente.</h3>")
