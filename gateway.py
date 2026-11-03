@@ -123,7 +123,7 @@ def _get_patient_active_appointments(clean_phone: str) -> List[Dict[str, str]]:
 
 def _invoke_openclaw_agent(clean_phone: str, push_name: str, user_text: str, is_secretary: bool) -> str:
     now_str = datetime.now(ARG_TZ).strftime("%Y-%m-%d %H:%M (%A)")
-    safe_ctx = cache_mgr.get_patient_safe_context()
+    safe_ctx = cache_mgr.get_llm_safe_context()
     mis_turnos = _get_patient_active_appointments(clean_phone)
 
     history_key = f"chat_history:{clean_phone}"
