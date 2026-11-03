@@ -149,20 +149,27 @@ def _invoke_openclaw_agent(
     messages.extend(sliding_window[-6:])
     messages.append({"role": "user", "content": user_text})
 
-    payload = json.dumps({
-        "model": "mirta",
-        "user": clean_phone,
+payload = json.dumps({
+        "model": "openclaw:main",
         "messages": messages
     }).encode("utf-8")
 
-    headers = {"Content-Type": "application/json"}
+    headers = {
+        "Content-Type": "application/json",
+        "x-openclaw-session-key": f"whatsapp:{clean_phone}"
+    }
     if OPENCLAW_API_KEY:
         headers["Authorization"] = f"Bearer {OPENCLAW_API_KEY}"
 
     req = urllib.request.Request(OPENCLAW_API_URL, data=payload, headers=headers, method="POST")
-    with urllib.request.urlopen(req, timeout=45) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
-        reply_text = data["choices"][0]["message"]["content"].strip()
+    try:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            reply_text = data["choices"][0]["message"]["content"].strip()
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8", errors="ignore")
+        logger.error(f"Detalle error OpenClaw ({e.code}): {err_body}")
+        raise
 
     sliding_window.append({"role": "user", "content": user_text})
     sliding_window.append({"role": "assistant", "content": reply_text.replace("[ENVIAR_MAPA]", "").strip()})
