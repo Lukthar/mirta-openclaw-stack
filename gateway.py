@@ -121,14 +121,14 @@ def _get_patient_active_appointments(clean_phone: str) -> List[Dict[str, str]]:
 
 
 context_header = (
-        f"<Contexto_Sistema>\n"
-        f"- Fecha_Hora_Actual: {now_str} (America/Argentina/Buenos_Aires)\n"
-        f"- Session_Phone (usar en tools MCP): {clean_phone}\n"
-        f"- Nombre_WhatsApp: {push_name}\n"
-        f"- Rol_Usuario: {'SECRETARIA_ADMIN' if is_secretary else 'PACIENTE'}\n"
-        f"</Contexto_Sistema>\n\n"
-        f"<Contexto_Clinico>\n{json.dumps(safe_ctx, ensure_ascii=False)}\n</Contexto_Clinico>\n\n"
-        f"<Turnos_Activos_Paciente>\n{json.dumps(mis_turnos, ensure_ascii=False)}\n</Turnos_Activos_Paciente>"
+    f"<Contexto_Sistema>\n"
+    f"- Fecha_Hora_Actual: {now_str} (America/Argentina/Buenos_Aires)\n"
+    f"- Session_Phone (usar en tools MCP): {clean_phone}\n"
+    f"- Nombre_WhatsApp: {push_name}\n"
+    f"- Rol_Usuario: {'SECRETARIA_ADMIN' if is_secretary else 'PACIENTE'}\n"
+    f"</Contexto_Sistema>\n\n"
+    f"<Contexto_Clinico>\n{json.dumps(safe_ctx, ensure_ascii=False)}\n</Contexto_Clinico>\n\n"
+    f"<Turnos_Activos_Paciente>\n{json.dumps(mis_turnos, ensure_ascii=False)}\n</Turnos_Activos_Paciente>"
     )
 
     messages = [{"role": "system", "content": context_header}]
