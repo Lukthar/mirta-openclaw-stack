@@ -120,21 +120,7 @@ def _get_patient_active_appointments(clean_phone: str) -> List[Dict[str, str]]:
         return []
 
 
-def _invoke_openclaw_agent(
-    clean_phone: str,
-    push_name: str,
-    user_text: str,
-    is_secretary: bool
-) -> str:
-    safe_ctx = cache_mgr.get_llm_safe_context()
-    history_key = f"chat_history:{clean_phone}"
-    raw_hist = cache_mgr.redis.get(history_key)
-    sliding_window = json.loads(raw_hist) if raw_hist else []
-
-    mis_turnos = _get_patient_active_appointments(clean_phone) if not is_secretary else []
-    now_str = datetime.now(ARG_TZ).strftime("%A %d/%m/%Y %H:%M")
-
-    context_header = (
+context_header = (
         f"<Contexto_Sistema>\n"
         f"- Fecha_Hora_Actual: {now_str} (America/Argentina/Buenos_Aires)\n"
         f"- Session_Phone (usar en tools MCP): {clean_phone}\n"
@@ -149,7 +135,7 @@ def _invoke_openclaw_agent(
     messages.extend(sliding_window[-6:])
     messages.append({"role": "user", "content": user_text})
 
-payload = json.dumps({
+    payload = json.dumps({
         "model": "openclaw:main",
         "messages": messages
     }).encode("utf-8")
