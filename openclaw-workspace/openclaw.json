@@ -1,7 +1,7 @@
 {
   "agent": {
     "name": "Mirta",
-    "description": "Secretaria y recepcionista virtual de la Clínica Odontológica",
+    "description": "Secretaria y recepcionista virtual",
     "model": {
       "provider": "openrouter",
       "name": "openai/gpt-4o",
